@@ -8,7 +8,25 @@
     <title>Odin's Etch-a-Sketch</title>
 </head>
 <body>
+    <div class="main">
+        <div class="settings">
+            <div class="color-picker" id="picker"><input type="color" name="color" id="currColor"></div>
+            <button class="btn" id="color">Color Mode</button>
+            <button class="btn" id="rainbow">Rainbow Mode</button>
+            <button class="btn" id="shade">Shade Mode</button>
+            <button class="btn" id="reset">Reset</button>
+        </div>
+        <div class="canvas-container">
 
+        </div>
+        <div class="slider-container">
+            <div>Set size</div>
+            <div>
+                <span class="currSize">16</span>
+                <input type="range" min="1" value="16" max="64" class="slider" id="size">
+            </div>
+        </div>
+    </div>
 </body>
 <script src="script.js"></script>
 </html>
