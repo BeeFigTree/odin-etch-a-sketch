@@ -1,20 +1,37 @@
-const SIZE = 16;
+let SIZE = 16;
 const CANVAS = document.querySelector(".canvas-container");
 const COLOR_PICKER = document.querySelector("#currColor");
-const COLOR_MODE = document.querySelector('#color');
+const COLOR_MODE = document.querySelector("#color");
 const RAINBOW_MODE = document.querySelector("#rainbow");
 const ERASER_MODE = document.querySelector("#erase")
 const CLEAR_CANVAS = document.querySelector("#clear");
-const SHADE_MODE = document.querySelector("#shade");
-
+const SIZE_SLIDER = document.querySelector("#size");
+const SLIDER_SIZE = document.querySelector('.currSize');
+let currentMode = "color";
 let color = "black";
 let mousedown = false;
-let settings = [COLOR_MODE, RAINBOW_MODE, CLEAR_CANVAS, ERASER_MODE, SHADE_MODE]
+let settings = [COLOR_MODE, RAINBOW_MODE, ERASER_MODE]
+
+const getRandomInt = () => {
+    return Math.floor(Math.random() * 256);
+}
+
 const settingHandler = (e) => {
     removeActiveClass();
     addActiveClass(e);
+    currentMode = e.target.id;
 };
 
+CLEAR_CANVAS.addEventListener('click', (e) => {
+    clearCanvas(e);
+})
+
+const clearCanvas = () => {
+    let pixels = document.querySelectorAll('.pixel');
+    Array.from(pixels).forEach(pixel => {
+        pixel.style.background = 'white';
+    })
+}
 
 //Remove the class selected when a new mode is selected
 const removeActiveClass = () => {
@@ -31,14 +48,29 @@ const addActiveClass = (e) => {
     }
 };
 
+SIZE_SLIDER.addEventListener('change', (e) => {
+    SIZE = e.target.value;
+    SLIDER_SIZE.innerText = SIZE;
+    clearCanvas();
+    makeGrid(SIZE, SIZE)
+})
+
 settings.forEach(setting => {
-    console.log(setting)
     setting.addEventListener("click", (e) => {
         settingHandler(e);
     });
 });
 
-
+const drawHandler = (e) => {
+    let currentElement = e.target.style;
+    if(currentMode === 'color') {
+        currentElement.background = color;
+    } else if(currentMode === 'rainbow') {
+        currentElement.background = 'rgb(' + getRandomInt() + ',' + getRandomInt() + ',' + getRandomInt() +')';
+    } else {
+       currentElement.background = 'white';
+    }
+}
 
 COLOR_PICKER.addEventListener('change', (e) => {
     color = e.target.value;
@@ -50,20 +82,22 @@ let makeGrid = (rows, cols) => {
     for(let i = 0; i < (rows * cols); i++) {
         let PIXEL = document.createElement('div');
         PIXEL.addEventListener('mousedown', (e) => {
-            e.target.style.background = color;
             mousedown = true;
         })
         PIXEL.addEventListener("mouseup", (e) => {
             mousedown = false;
         })
-        PIXEL.addEventListener("mouseover", (e) => {
+        PIXEL.addEventListener("mouseenter", (e) => {
             if (mousedown === false) return
-            e.target.style.background = color;
+            drawHandler(e);
         })
         CANVAS.appendChild(PIXEL).className = 'pixel';
     }
 }
 makeGrid(SIZE, SIZE)
 
+CANVAS.addEventListener("mouseleave", () => {
+    mousedown = false;
+})
 
 
